@@ -35,11 +35,10 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
     protected $errors       = [];
 
     /**
-     * Constructor
-     *
-     * @param  string                    $key     The $_FILES[] key
-     * @throws \RuntimeException                  If file uploads are disabled in the php.ini file
-     * @throws \InvalidArgumentException          If $_FILES[] does not contain key
+     * Handler::__construct()
+     * 
+     * @param mixed $key
+     * @return
      */
     public function __construct($key)
     {
@@ -58,13 +57,20 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
                 $this->objects[] = FileInfo::createFactory($_FILES[$key]['tmp_name'][$index],$_FILES[$key]['name'][$index]);
             }
         }else{
-            if ($_FILES[$key]['error'] !== UPLOAD_ERR_OK) {
+            if($_FILES[$key]['error'] !== UPLOAD_ERR_OK) {
                 $this->errors[] = sprintf('%s: %s',$_FILES[$key]['name'],static::$errorCodeMessages[$_FILES[$key]['error']]);
             }
             $this->objects[] = FileInfo::createFactory($_FILES[$key]['tmp_name'],$_FILES[$key]['name']);
         }
+        $this->setStorage();
     }
 
+    /**
+     * Handler::beforeValidate()
+     * 
+     * @param mixed $callable
+     * @return
+     */
     public function beforeValidate($callable)
     {
         if (is_object($callable) === false || method_exists($callable, '__invoke') === false) {
@@ -74,6 +80,12 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
         return $this;
     }
 
+    /**
+     * Handler::afterValidate()
+     * 
+     * @param mixed $callable
+     * @return
+     */
     public function afterValidate($callable)
     {
         if (is_object($callable) === false || method_exists($callable, '__invoke') === false) {
@@ -83,6 +95,12 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
         return $this;
     }
 
+    /**
+     * Handler::beforeUpload()
+     * 
+     * @param mixed $callable
+     * @return
+     */
     public function beforeUpload($callable)
     {
         if (is_object($callable) === false || method_exists($callable, '__invoke') === false) {
@@ -92,6 +110,12 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
         return $this;
     }
 
+    /**
+     * Handler::afterUpload()
+     * 
+     * @param mixed $callable
+     * @return
+     */
     public function afterUpload($callable)
     {
         if (is_object($callable) === false || method_exists($callable, '__invoke') === false) {
@@ -101,6 +125,13 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
         return $this;
     }
 
+    /**
+     * Handler::applyCallback()
+     * 
+     * @param mixed $callbackName
+     * @param mixed $file
+     * @return
+     */
     protected function applyCallback($callbackName, FileInfo $file)
     {
         if (in_array($callbackName, array('beforeValidation', 'afterValidation', 'beforeUpload', 'afterUpload')) === true) {
@@ -110,6 +141,12 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
         }
     }
 
+    /**
+     * Handler::addValidations()
+     * 
+     * @param mixed $validations
+     * @return
+     */
     public function addValidations(array $validations)
     {
         foreach ($validations as $validation) {
@@ -117,19 +154,44 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
         }
         return $this;
     }
-
+    
+    /**
+     * Handler::setStorage()
+     * 
+     * @return void
+     */
+    public function setStorage(){
+        $this->storage = new \SapiStudio\FileSystem\Storage();
+        return $this;
+    }
    
+    /**
+     * Handler::addValidation()
+     * 
+     * @param mixed $validation
+     * @return
+     */
     public function addValidation(ValidationInterface $validation)
     {
         $this->validations[] = $validation;
         return $this;
     }
 
+    /**
+     * Handler::getValidations()
+     * 
+     * @return
+     */
     public function getValidations()
     {
         return $this->validations;
     }
 
+    /**
+     * Handler::isValid()
+     * 
+     * @return
+     */
     public function isValid()
     {
         foreach ($this->objects as $fileInfo) {
@@ -155,11 +217,23 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
         return empty($this->errors);
     }
 
+    /**
+     * Handler::getErrors()
+     * 
+     * @return
+     */
     public function getErrors()
     {
         return $this->errors;
     }
 
+    /**
+     * Handler::__call()
+     * 
+     * @param mixed $name
+     * @param mixed $arguments
+     * @return
+     */
     public function __call($name, $arguments)
     {
         $count  = count($this->objects);
@@ -177,6 +251,11 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
         return $result;
     }
 
+    /**
+     * Handler::upload()
+     * 
+     * @return
+     */
     public function upload()
     {
         if ($this->isValid() === false) {
@@ -194,21 +273,46 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
      * Array Access Interface
      *******************************************************************************/
 
+    /**
+     * Handler::offsetExists()
+     * 
+     * @param mixed $offset
+     * @return
+     */
     public function offsetExists($offset)
     {
         return isset($this->objects[$offset]);
     }
 
+    /**
+     * Handler::offsetGet()
+     * 
+     * @param mixed $offset
+     * @return
+     */
     public function offsetGet($offset)
     {
         return isset($this->objects[$offset]) ? $this->objects[$offset] : null;
     }
 
+    /**
+     * Handler::offsetSet()
+     * 
+     * @param mixed $offset
+     * @param mixed $value
+     * @return
+     */
     public function offsetSet($offset, $value)
     {
         $this->objects[$offset] = $value;
     }
 
+    /**
+     * Handler::offsetUnset()
+     * 
+     * @param mixed $offset
+     * @return
+     */
     public function offsetUnset($offset)
     {
         unset($this->objects[$offset]);
@@ -218,6 +322,11 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
      * Iterator Aggregate Interface
      *******************************************************************************/
 
+    /**
+     * Handler::getIterator()
+     * 
+     * @return
+     */
     public function getIterator()
     {
         return new \ArrayIterator($this->objects);
@@ -227,6 +336,11 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
      * Countable Interface
      *******************************************************************************/
 
+    /**
+     * Handler::count()
+     * 
+     * @return
+     */
     public function count()
     {
         return count($this->objects);
