@@ -131,7 +131,7 @@ class Avatar
      */
     public function setConfig($config=null){
         if(is_null($config))
-            $config     = require dirname(__dir__ ) . DIRECTORY_SEPARATOR .'config' . DIRECTORY_SEPARATOR . 'config.php';
+            $config     = require dirname(__FILE__) . DIRECTORY_SEPARATOR .'config' . DIRECTORY_SEPARATOR . 'config.php';
         $this->config   = new Repository($config);
         return $this;
     }
