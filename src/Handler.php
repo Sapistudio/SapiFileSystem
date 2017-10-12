@@ -61,7 +61,7 @@ class Handler
      * @param bool $recursive
      * @return
      */
-    public function createDir($dir, $mkdirPermissions = 0755, $recursive=false){
+    public static function createDir($dir, $mkdirPermissions = 0755, $recursive=false){
         if (is_dir($dir))
             return true;
         static::$filesystem->makeDirectory($dir,$mkdirPermissions,$recursive);
@@ -73,7 +73,7 @@ class Handler
      * @param mixed $dir
      * @return
      */
-    public function getDirectories($dir)
+    public static function getDirectories($dir)
     {
         return static::$filesystem->directories($dir);
     }
@@ -84,7 +84,7 @@ class Handler
      * @param mixed $dir
      * @return
      */
-    public function getFiles($dir)
+    public static function getFiles($dir)
     {
         return static::$filesystem->files($dir);
     }
@@ -96,7 +96,7 @@ class Handler
      * @param bool $returnfile
      * @return
      */
-    public function getAllFiles($dir,$returnfile = false)
+    public static function getAllFiles($dir,$returnfile = false)
     {
         if(!is_dir($dir))
             return false;
@@ -114,7 +114,7 @@ class Handler
      * @param mixed $dir
      * @return
      */
-    public function getDirectoriesAndFiles($dir)
+    public static function getDirectoriesAndFiles($dir)
     {
         return array_merge(static::$filesystem->getDirectories($dir), static::$filesystem->getFiles($dir));
     }
@@ -125,7 +125,7 @@ class Handler
      * @param mixed $path
      * @return
      */
-    public function deleteDir($path)
+    public static function deleteDir($path)
     {
         static::$filesystem->deleteDirectory($path);
     }
@@ -136,7 +136,7 @@ class Handler
      * @param mixed $path
      * @return
      */
-    public function deleteFile($path)
+    public static function deleteFile($path)
     {
         return static::$filesystem->delete($path);
     }
@@ -148,7 +148,7 @@ class Handler
      * @param mixed $target
      * @return
      */
-    public function copyFile($path, $target)
+    public static function copyFile($path, $target)
     {
         return static::$filesystem->copy($path, $target);
     }
@@ -160,7 +160,7 @@ class Handler
      * @param mixed $target
      * @return
      */
-    public function moveFile($path, $target)
+    public static function moveFile($path, $target)
     {
         return static::$filesystem->move($path, $target);
     }
@@ -172,7 +172,7 @@ class Handler
      * @param mixed $text
      * @return
      */
-    public function dumpFile($path,$text){
+    public static static function dumpFile($path,$text){
         //$this->chmod($path,0755);
         chmod($path, 0755);
         return static::$filesystem->put($path,$text);
@@ -185,7 +185,7 @@ class Handler
      * @param mixed $text
      * @return
      */
-    public function dumpJson($path,$text){
+    public static function dumpJson($path,$text){
         return static::$filesystem->dumpFile($path,json_encode($text));
     }
     
@@ -196,7 +196,7 @@ class Handler
      * @param mixed $data
      * @return
      */
-    public function appendToFile($path, $data)
+    public static function appendToFile($path, $data)
     {
         return static::$filesystem->append($path,"\n".$data);
     }
@@ -219,7 +219,7 @@ class Handler
      * @param mixed $path
      * @return
      */
-    public function loadFile($path){
+    public static function loadFile($path){
         $file = new \SplFileInfo($path);
         if ($file->isFile()) {
             return file_get_contents($file->getPathname());
