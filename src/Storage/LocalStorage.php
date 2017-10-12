@@ -16,6 +16,13 @@ class LocalStorage
     protected $directory;
     protected $overwrite;
 
+    /**
+     * LocalStorage::__construct()
+     * 
+     * @param mixed $directory
+     * @param bool $overwrite
+     * @return
+     */
     public function __construct($directory, $overwrite = false)
     {
         if (!is_dir($directory)) {
@@ -28,18 +35,30 @@ class LocalStorage
         $this->overwrite = (bool)$overwrite;
     }
 
-    public function upload(FileInfo $fileInfo)
+    /**
+     * LocalStorage::upload()
+     * 
+     * @param mixed $fileInfo
+     * @return
+     */
+    public function upload(\SapiStudio\FileSystem\FileInfo $fileInfo)
     {
         $destinationFile = $this->directory . $fileInfo->getNameWithExtension();
         if ($this->overwrite === false && file_exists($destinationFile) === true) {
-            throw new \Exception('File already exists', $fileInfo);
+            throw new \Exception('File already exists:'.$destinationFile);
         }
-
         if ($this->moveUploadedFile($fileInfo->getPathname(), $destinationFile) === false) {
-            throw new \Exception('File could not be moved to final destination.', $fileInfo);
+            throw new \Exception('File could not be moved to final destination:'.$destinationFile);
         }
     }
 
+    /**
+     * LocalStorage::moveUploadedFile()
+     * 
+     * @param mixed $source
+     * @param mixed $destination
+     * @return
+     */
     protected function moveUploadedFile($source, $destination)
     {
         return move_uploaded_file($source, $destination);

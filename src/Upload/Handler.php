@@ -46,7 +46,7 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
             throw new \RuntimeException('File uploads are disabled in your PHP.ini file');
         }
         if (isset($_FILES[$key]) === false) {
-            throw new \InvalidArgumentException("Cannot find uploaded file(s) identified by key: $key");
+            throw new \Exception("Cannot find uploaded file(s) identified by key: $key");
         }
         if (is_array($_FILES[$key]['tmp_name']) === true) {
             foreach ($_FILES[$key]['tmp_name'] as $index => $tmpName) {
@@ -74,7 +74,7 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
     public function beforeValidate($callable)
     {
         if (is_object($callable) === false || method_exists($callable, '__invoke') === false) {
-            throw new \InvalidArgumentException('Callback is not a Closure or invokable object.');
+            throw new \Exception('Callback is not a Closure or invokable object.');
         }
         $this->beforeValidation = $callable;
         return $this;
@@ -89,7 +89,7 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
     public function afterValidate($callable)
     {
         if (is_object($callable) === false || method_exists($callable, '__invoke') === false) {
-            throw new \InvalidArgumentException('Callback is not a Closure or invokable object.');
+            throw new \Exception('Callback is not a Closure or invokable object.');
         }
         $this->afterValidation = $callable;
         return $this;
@@ -104,7 +104,7 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
     public function beforeUpload($callable)
     {
         if (is_object($callable) === false || method_exists($callable, '__invoke') === false) {
-            throw new \InvalidArgumentException('Callback is not a Closure or invokable object.');
+            throw new \Exception('Callback is not a Closure or invokable object.');
         }
         $this->beforeUpload = $callable;
         return $this;
@@ -119,7 +119,7 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
     public function afterUpload($callable)
     {
         if (is_object($callable) === false || method_exists($callable, '__invoke') === false) {
-            throw new \InvalidArgumentException('Callback is not a Closure or invokable object.');
+            throw new \Exception('Callback is not a Closure or invokable object.');
         }
         $this->afterUpload = $callable;
         return $this;
@@ -161,7 +161,7 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
      * @return void
      */
     public function setStorage(){
-        $this->storage = new \SapiStudio\FileSystem\Storage();
+        $this->storage = new \SapiStudio\FileSystem\Storage\LocalStorage('/srv/www/tmp/');
         return $this;
     }
    
@@ -204,7 +204,7 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
             }
             // Apply user validations
             foreach ($this->validations as $validation) {
-                try {
+                try{
                     $validation->validate($fileInfo);
                 } catch (\Exception $e) {
                     $this->errors[] = sprintf('%s: %s',$fileInfo->getNameWithExtension(),$e->getMessage());
@@ -240,15 +240,31 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
         $result = null;
         if ($count) {
             if ($count > 1) {
-                $result = array();
+                $result = [];
                 foreach ($this->objects as $object) {
-                    $result[] = call_user_func_array(array($object, $name), $arguments);
+                    $result[] = call_user_func_array([$object, $name], $arguments);
                 }
-            } else{
-                $result = call_user_func_array(array($this->objects[0], $name), $arguments);
+            }else{
+                $result = call_user_func_array([$this->objects[0], $name], $arguments);
             }
         }
         return $result;
+    }
+    
+    /**
+     * Handler::uploadDetails()
+     * 
+     * @return
+     */
+    public function uploadDetails(){
+        return [
+            'name'       => $this->getNameWithExtension(),
+            'extension'  => $this->getExtension(),
+            'mime'       => $this->getMimetype(),
+            'size'       => $this->getSize(),
+            'md5'        => $this->getMd5(),
+            'dimensions' => $this->getDimensions()
+        ];
     }
 
     /**
@@ -258,7 +274,7 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public function upload()
     {
-        if ($this->isValid() === false) {
+        if ($this->isValid() === false){
             throw new \Exception('File validation failed');
         }
         foreach ($this->objects as $fileInfo) {
@@ -345,4 +361,4 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
     {
         return count($this->objects);
     }
-}
+} 
