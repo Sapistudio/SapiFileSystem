@@ -44,7 +44,6 @@ class Handler
         }
     }
     
-    
     /**
      * Handler::getFinder()
      * 
@@ -209,8 +208,8 @@ class Handler
      * @param bool $toArray
      * @return
      */
-    public function loadJson($path,$toArray=false){
-        $file = $this->loadFile($path);
+    public static function loadJson($path,$toArray=false){
+        $file = static::$filesystem->get($path);
         return (!$file) ? false : json_decode($file,$toArray);
     }
     
