@@ -111,6 +111,18 @@ class Handler
     }
     
     /**
+     * Handler::append()
+     * 
+     * @param mixed $path
+     * @param mixed $data
+     * @return
+     */
+    public static function append($path, $data)
+    {
+        return static::$filesystem->append($path,"\n".$data);
+    }
+    
+    /**
      * Handler::dumpJson()
      * 
      * @param mixed $path
