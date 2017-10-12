@@ -172,7 +172,7 @@ class Handler
      * @param mixed $text
      * @return
      */
-    public static static function dumpFile($path,$text){
+    public static function dumpFile($path,$text){
         //$this->chmod($path,0755);
         chmod($path, 0755);
         return static::$filesystem->put($path,$text);
