@@ -16,13 +16,14 @@
  */
  
 namespace SapiStudio\FileSystem\Image;
-
 use Illuminate\Support\Arr;
 use Intervention\Image\AbstractFont;
 use Intervention\Image\AbstractShape;
 use Intervention\Image\ImageManager;
 use Intervention\Image\ImageManagerStatic;
 use Illuminate\Config\Repository;
+use Crew\Unsplash\HttpClient as UnsplashHttp;
+use Crew\Unsplash\Photo as UnsplashPhoto;
 
 class Avatar
 {
@@ -71,6 +72,7 @@ class Avatar
         $this->borderColor              = Arr::get($this->config, 'border.color');
         $this->initialGenerator         = (new InitialGenerator())->setUppercase(Arr::get($this->config, 'uppercase'));
     }
+    
     /**
      * Avatar::__toString()
      * 
@@ -78,7 +80,7 @@ class Avatar
      */
     public function __toString()
     {
-        return (string)$this->toBase64();
+        return (string )$this->toBase64();
     }
     
     /**
@@ -90,7 +92,6 @@ class Avatar
         Arr::set($this->config, $key, $value);
         return $this;
     }
-    
     /**
      * Avatar::create()
      * 
@@ -109,6 +110,20 @@ class Avatar
     }
     
     /**
+     * Avatar::makeUnsplash()
+     * 
+     * @param mixed $appId
+     * @return
+     */
+    public function makeUnsplash($appId = null)
+    {
+        if (is_null($appId))
+            return false;
+        UnsplashHttp::init(['applicationId' => $appId]);
+        return ImageManagerStatic::make(UnsplashPhoto::random((Arr::get($this->config, 'splashQuery')) ? ['query' => Arr::get($this->config, 'splashQuery')] : false)->urls['raw'])->fit($this->width);
+    }
+    
+    /**
      * Avatar::setConfig()
      * 
      * @param mixed $config
@@ -120,7 +135,6 @@ class Avatar
         $this->config   = new Repository($config);
         return $this;
     }
-    
     /**
      * Avatar::setFontFolder()
      * 
@@ -131,7 +145,6 @@ class Avatar
     {
         $this->fontFolder = $folders;
     }
-    
     /**
      * Avatar::setFont()
      * 
@@ -144,7 +157,6 @@ class Avatar
             $this->font = $font;
         return $this;
     }
-    
     /**
      * Avatar::setLength()
      * 
@@ -156,7 +168,6 @@ class Avatar
         $this->chars = (int)$length;
         return $this;
     }
-    
     /**
      * Avatar::getImage()
      * 
@@ -167,7 +178,6 @@ class Avatar
         $this->buildAvatar();
         return $this->image;
     }
-    
     /**
      * Avatar::toBase64()
      * 
@@ -178,7 +188,6 @@ class Avatar
         $this->buildAvatar();
         return $this->image->encode('data-url');
     }
-    
     /**
      * Avatar::save()
      * 
@@ -191,7 +200,6 @@ class Avatar
         $this->buildAvatar();
         return $this->image->save($path, $quality);
     }
-    
     /**
      * Avatar::setBackground()
      * 
@@ -203,7 +211,6 @@ class Avatar
         $this->background = $hex;
         return $this;
     }
-    
     /**
      * Avatar::setForeground()
      * 
@@ -215,7 +222,6 @@ class Avatar
         $this->foreground = $hex;
         return $this;
     }
-    
     /**
      * Avatar::setDimension()
      * 
@@ -231,7 +237,6 @@ class Avatar
         $this->height = $height;
         return $this;
     }
-    
     /**
      * Avatar::setFontSize()
      * 
@@ -243,7 +248,6 @@ class Avatar
         $this->fontSize = $size;
         return $this;
     }
-    
     /**
      * Avatar::setBorder()
      * 
@@ -257,7 +261,6 @@ class Avatar
         $this->borderColor = $color;
         return $this;
     }
-    
     /**
      * Avatar::setShape()
      * 
@@ -269,7 +272,6 @@ class Avatar
         $this->shape = $shape;
         return $this;
     }
-    
     /**
      * Avatar::getInitial()
      * 
@@ -279,7 +281,16 @@ class Avatar
     {
         return $this->initials;
     }
-    
+    /**
+     * Avatar::getImageObject()
+     * 
+     * @return
+     */
+    public function getImageObject()
+    {
+        $this->buildAvatar();
+        return $this->image;
+    }
     /**
      * Avatar::getRandomBackground()
      * 
@@ -289,7 +300,6 @@ class Avatar
     {
         return $this->getRandomElement($this->availableBackgrounds, $this->background);
     }
-    
     /**
      * Avatar::getRandomForeground()
      * 
@@ -299,7 +309,6 @@ class Avatar
     {
         return $this->getRandomElement($this->availableForegrounds, $this->foreground);
     }
-    
     /**
      * Avatar::setRandomFont()
      * 
@@ -326,7 +335,6 @@ class Avatar
             }
         }
     }
-    
     /**
      * Avatar::getBorderColor()
      * 
@@ -340,7 +348,6 @@ class Avatar
             return $this->background;
         return $this->borderColor;
     }
-    
     /**
      * Avatar::buildAvatar()
      * 
@@ -360,6 +367,7 @@ class Avatar
                 $font->file($this->font); $font->size($this->fontSize); $font->color($this->foreground); $font->align('center'); $font->valign('middle'); }
             );
         }
+        
     }
     
     /**
@@ -374,7 +382,6 @@ class Avatar
             return $this->$method();
         throw new \InvalidArgumentException("Shape [$this->shape] currently not supported.");
     }
-    
     /**
      * Avatar::createCircleShape()
      * 
@@ -393,7 +400,6 @@ class Avatar
         }
         );
     }
-    
     /**
      * Avatar::createSquareShape()
      * 
@@ -412,7 +418,6 @@ class Avatar
         }
         );
     }
-    
     /**
      * Avatar::getRandomElement()
      * 
@@ -434,7 +439,6 @@ class Avatar
         }
         return $array[$number % count($array)];
     }
-    
     /**
      * Avatar::chooseFont()
      * 
