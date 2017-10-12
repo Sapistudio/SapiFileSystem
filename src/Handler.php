@@ -66,29 +66,7 @@ class Handler
             return true;
         static::$filesystem->makeDirectory($dir,$mkdirPermissions,$recursive);
     }
-    
-    /**
-     * Handler::getDirectories()
-     * 
-     * @param mixed $dir
-     * @return
-     */
-    public static function getDirectories($dir)
-    {
-        return static::$filesystem->directories($dir);
-    }
 
-    /**
-     * Handler::getFiles()
-     * 
-     * @param mixed $dir
-     * @return
-     */
-    public static function getFiles($dir)
-    {
-        return static::$filesystem->files($dir);
-    }
-    
     /**
      * Handler::getAllFiles()
      * 
@@ -116,53 +94,7 @@ class Handler
      */
     public static function getDirectoriesAndFiles($dir)
     {
-        return array_merge(static::$filesystem->getDirectories($dir), static::$filesystem->getFiles($dir));
-    }
-
-    /**
-     * Handler::deleteDir()
-     * 
-     * @param mixed $path
-     * @return
-     */
-    public static function deleteDir($path)
-    {
-        static::$filesystem->deleteDirectory($path);
-    }
-    
-    /**
-     * Handler::deleteFile()
-     * 
-     * @param mixed $path
-     * @return
-     */
-    public static function deleteFile($path)
-    {
-        return static::$filesystem->delete($path);
-    }
-    
-    /**
-     * Handler::copyFile()
-     * 
-     * @param mixed $path
-     * @param mixed $target
-     * @return
-     */
-    public static function copyFile($path, $target)
-    {
-        return static::$filesystem->copy($path, $target);
-    }
-    
-    /**
-     * Handler::moveFile()
-     * 
-     * @param mixed $path
-     * @param mixed $target
-     * @return
-     */
-    public static function moveFile($path, $target)
-    {
-        return static::$filesystem->move($path, $target);
+        return array_merge(static::$filesystem->directories($dir), static::$filesystem->files($dir));
     }
     
     /**
@@ -190,18 +122,6 @@ class Handler
     }
     
     /**
-     * Handler::appendToFile()
-     * 
-     * @param mixed $path
-     * @param mixed $data
-     * @return
-     */
-    public static function appendToFile($path, $data)
-    {
-        return static::$filesystem->append($path,"\n".$data);
-    }
-    
-    /**
      * Handler::loadJson()
      * 
      * @param mixed $path
@@ -211,19 +131,5 @@ class Handler
     public static function loadJson($path,$toArray=false){
         $file = static::$filesystem->get($path);
         return (!$file) ? false : json_decode($file,$toArray);
-    }
-    
-    /**
-     * Handler::loadFile()
-     * 
-     * @param mixed $path
-     * @return
-     */
-    public static function loadFile($path){
-        $file = new \SplFileInfo($path);
-        if ($file->isFile()) {
-            return file_get_contents($file->getPathname());
-        }
-        return false;
     }
 }
