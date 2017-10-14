@@ -33,6 +33,7 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
     protected $objects      = [];
     protected $validations  = [];
     protected $errors       = [];
+    protected $uploadedFile = null;
 
     /**
      * Handler::__construct()
@@ -42,7 +43,7 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public function __construct($key)
     {
-        if (ini_get('file_uploads') == false) {
+        if (ini_get('file_uploads') == false){
             throw new \RuntimeException('File uploads are disabled in your PHP.ini file');
         }
         if (isset($_FILES[$key]) === false) {
@@ -62,7 +63,6 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
             }
             $this->objects[] = FileInfo::createFactory($_FILES[$key]['tmp_name'],$_FILES[$key]['name']);
         }
-        $this->setStorage();
     }
 
     /**
@@ -160,8 +160,8 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
      * 
      * @return void
      */
-    public function setStorage(){
-        $this->storage = new \SapiStudio\FileSystem\Storage\LocalStorage('/srv/www/tmp/');
+    public function setStorage($path){
+        $this->storage = new \SapiStudio\FileSystem\Storage\LocalStorage($path,true);
         return $this;
     }
    
@@ -266,7 +266,15 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
             'dimensions' => $this->getDimensions()
         ];
     }
-
+    
+    /**
+     * Handler::getUploadedFilePath()
+     * 
+     * @return
+     */
+    public function getUploadedFilePath(){
+        return $this->uploadedFile;
+    }
     /**
      * Handler::upload()
      * 
@@ -279,7 +287,7 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
         }
         foreach ($this->objects as $fileInfo) {
             $this->applyCallback('beforeUpload', $fileInfo);
-            $this->storage->upload($fileInfo);
+            $this->uploadedFile = $this->storage->upload($fileInfo);
             $this->applyCallback('afterUpload', $fileInfo);
         }
         return true;

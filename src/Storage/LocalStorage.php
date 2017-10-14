@@ -50,6 +50,7 @@ class LocalStorage
         if ($this->moveUploadedFile($fileInfo->getPathname(), $destinationFile) === false) {
             throw new \Exception('File could not be moved to final destination:'.$destinationFile);
         }
+        return $destinationFile;
     }
 
     /**

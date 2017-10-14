@@ -32,7 +32,17 @@ class FileInfo extends \SplFileInfo
         $this->setExtension(pathinfo($desiredName, PATHINFO_EXTENSION));
         parent::__construct($filePathname);
     }
-
+    
+    /**
+     * FileInfo::loadCsv()
+     * 
+     * @param mixed $settings
+     * @return
+     */
+    public function loadCsv($settings = []){
+        return new \SapiStudio\FileSystem\Parsers\Csv($this->getPathname(),$settings);
+    }
+    
     /**
      * FileInfo::getName()
      * 
