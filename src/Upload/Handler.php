@@ -52,14 +52,14 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
         if (is_array($_FILES[$key]['tmp_name']) === true) {
             foreach ($_FILES[$key]['tmp_name'] as $index => $tmpName) {
                 if ($_FILES[$key]['error'][$index] !== UPLOAD_ERR_OK) {
-                    $this->errors[] = sprintf('%s: %s',$_FILES[$key]['name'][$index],static::$errorCodeMessages[$_FILES[$key]['error'][$index]]);
+                    throw new \Exception(sprintf('%s: %s',$_FILES[$key]['name'][$index],static::$errorCodeMessages[$_FILES[$key]['error'][$index]]));
                     continue;
                 }
                 $this->objects[] = FileInfo::createFactory($_FILES[$key]['tmp_name'][$index],$_FILES[$key]['name'][$index]);
             }
         }else{
             if($_FILES[$key]['error'] !== UPLOAD_ERR_OK) {
-                $this->errors[] = sprintf('%s: %s',$_FILES[$key]['name'],static::$errorCodeMessages[$_FILES[$key]['error']]);
+                throw new \Exception(sprintf('%s: %s',$_FILES[$key]['name'],static::$errorCodeMessages[$_FILES[$key]['error']]));
             }
             $this->objects[] = FileInfo::createFactory($_FILES[$key]['tmp_name'],$_FILES[$key]['name']);
         }
