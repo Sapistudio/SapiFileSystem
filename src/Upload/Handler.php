@@ -273,7 +273,7 @@ class Handler implements \ArrayAccess, \IteratorAggregate, \Countable
      * @return
      */
     public function getUploadedFilePath(){
-        return (!$this->uploadedFile) ? $file->getPathname() : $this->uploadedFile;
+        return (!$this->uploadedFile) ? $this->getPathname() : $this->uploadedFile;
     }
     /**
      * Handler::upload()
