@@ -115,11 +115,11 @@ class Avatar
      * @param mixed $appId
      * @return
      */
-    public function makeUnsplash($appId = null)
+    public function makeUnsplash($unsplashParams = [])
     {
-        if (is_null($appId))
+        if (!$unsplashParams)
             return false;
-        UnsplashHttp::init(['applicationId' => $appId]);
+        UnsplashHttp::init($unsplashParams);
         return ImageManagerStatic::make(UnsplashPhoto::random((Arr::get($this->config, 'splashQuery')) ? ['query' => Arr::get($this->config, 'splashQuery')] : false)->urls['raw'])->fit($this->width);
     }
     
