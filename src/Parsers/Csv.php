@@ -8,11 +8,25 @@ class Csv extends \SplFileObject
     private $filename;
     private $_aHeaders = [];
     
+    /**
+     * Csv::create()
+     * 
+     * @param mixed $filename
+     * @param mixed $settings
+     * @return
+     */
     public static function create($filename, $settings = [])
     {
         return new static ($filename,$settings);
     }
     
+    /**
+     * Csv::__construct()
+     * 
+     * @param mixed $filename
+     * @param mixed $settings
+     * @return
+     */
     public function __construct($filename, $settings = [])
     {
         parent::__construct($filename, 'r');
@@ -21,6 +35,12 @@ class Csv extends \SplFileObject
         $this->filename = $filename;
     }
     
+    /**
+     * Csv::csvMapping()
+     * 
+     * @param mixed $mappingData
+     * @return
+     */
     public function csvMapping($mappingData = []){
         $mappingData = array_filter($mappingData);
         foreach ($this as $k => $line) {
@@ -32,6 +52,12 @@ class Csv extends \SplFileObject
         return $return;
     }
     
+    /**
+     * Csv::firstRowHeader()
+     * 
+     * @param bool $bFirstRowHeader
+     * @return
+     */
     public function firstRowHeader($bFirstRowHeader = true)
     {
         parent::rewind();
@@ -43,11 +69,21 @@ class Csv extends \SplFileObject
         return $this;
     }
 
+    /**
+     * Csv::getHeaders()
+     * 
+     * @return
+     */
     public function getHeaders()
     {
         return $this->_aHeaders;
     }
     
+    /**
+     * Csv::rewind()
+     * 
+     * @return
+     */
     public function rewind()
     {
         parent::rewind();
@@ -56,11 +92,21 @@ class Csv extends \SplFileObject
         }
     }
     
+    /**
+     * Csv::totalLines()
+     * 
+     * @return
+     */
     public function totalLines(){
         $this->seek(PHP_INT_MAX);
         return $this->key();
     }
     
+    /**
+     * Csv::current()
+     * 
+     * @return
+     */
     public function current()
     {
         if (count($this->_aHeaders)){
