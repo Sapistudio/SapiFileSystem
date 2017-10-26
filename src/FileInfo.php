@@ -39,8 +39,8 @@ class FileInfo extends \SplFileInfo
      * @param mixed $settings
      * @return
      */
-    public function loadCsv($settings = []){
-        return new \SapiStudio\FileSystem\Parsers\Csv($this->getPathname(),$settings);
+    public function loadCsv(){
+        return \SapiStudio\FileSystem\Formatter::csv($this->getPathname());
     }
     
     /**
