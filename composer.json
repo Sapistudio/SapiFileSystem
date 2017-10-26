@@ -5,8 +5,9 @@
     "require": {
         "php" : ">=5.5.0",
         "ext-fileinfo": "*",
-        "illuminate/support":"^5.2",
-        "illuminate/config": "^5.2",
+        "league/csv": "^8.0",
+        "illuminate/config": "^5.3",
+		"illuminate/support": "5.3.*"
         "illuminate/filesystem": "5.3.*",
         "intervention/image": "^2.1",
         "symfony/finder": "3.1.*",
