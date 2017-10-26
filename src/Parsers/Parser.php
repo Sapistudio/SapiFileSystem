@@ -2,7 +2,7 @@
 namespace SapiStudio\FileSystem\Parsers;
 
 use Illuminate\Support\Str;
-use SapiStudio\Formatter\ArrayHelpers;
+use SapiStudio\FileSystem\ArrayHelpers;
 
 
 abstract class Parser {
