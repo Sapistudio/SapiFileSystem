@@ -68,7 +68,7 @@ class CsvParser extends Parser {
     public function firstRowHeader()
     {
         if (!$this->_aHeaders){
-            $this->_aHeaders = $this->fetchOne(0);
+            $this->_aHeaders = array_filter($this->csvObject->fetchOne(0));
             $this->hasHeaders = true;
         }
         return $this;
