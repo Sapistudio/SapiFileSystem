@@ -35,8 +35,6 @@ class FileInfo extends \SplFileInfo
     
     /**
      * FileInfo::loadCsv()
-     * 
-     * @param mixed $settings
      * @return
      */
     public function loadCsv(){
