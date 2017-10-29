@@ -10,7 +10,7 @@
 	"illuminate/support": "5.4.*",
         "illuminate/filesystem": "5.4.*",
         "intervention/image": "^2.1",
-        "symfony/finder": "3.1.*",
+        "symfony/finder": "^3.1",
         "danielstjules/stringy": "^2.2",
         "crewlabs/unsplash": "^2.2"
     },
