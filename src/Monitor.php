@@ -40,6 +40,17 @@ class Monitor
         $this->GetKnownFiles();
         $this->Compare();
         $this->StoreKnownFiles();
+        return $this;
+    }
+    
+    /**
+     * Monitor::getReport()
+     * 
+     * @return
+     */
+    public function getReport()
+    {
+        return $this->reportStatus;
     }
     
     /**
