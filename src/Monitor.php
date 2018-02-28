@@ -3,7 +3,6 @@
 namespace SapiStudio\FileSystem;
 
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Process\Process;
 
 class Monitor
 {
@@ -42,20 +41,7 @@ class Monitor
         $this->Compare();
         $this->StoreKnownFiles();
     }
-
-    /**
-     * Monitor::trigger()
-     * 
-     * @return
-     */
-    private function trigger()
-    {
-        $process = new Process($this->command);
-        $process->setTty(true);
-        $process->run();
-        print $process->getOutput();
-    }
-
+    
     /**
      * Monitor::getFiles()
      * 
