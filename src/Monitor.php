@@ -8,7 +8,8 @@ class Monitor
 {
     private $monitorLocation    = null;
     private $command            = null;
-    protected $StorageLocation  = 'mScan.dat';
+    static $storageLocation     = 'mScan.dat';
+    static $logFolder           = 'logs';
     protected $HashFileLimit    = 2048000;
     protected $reportStatus     = [];
     protected $IsExecDisabled;
@@ -27,8 +28,15 @@ class Monitor
         $this->monitorLocation = $location;
         $this->timestamp = time();
         $this->IsExecDisabled = in_array('exec', explode(',', ini_get('disable_functions')));
+        self::$storageLocation = __DIR__.DIRECTORY_SEPARATOR.self::$logFolder.DIRECTORY_SEPARATOR.self::$storageLocation;
     }
-
+    
+    public static function postInstall(){
+        chdir(dirname(__FILE__));
+        $directory  = __DIR__.DIRECTORY_SEPARATOR.self::$logFolder;
+        Handler::createDir($directory);
+        exec('chmod 777 '.$directory);
+    }
     /**
      * Monitor::watch()
      * 
@@ -60,8 +68,7 @@ class Monitor
      */
     private function getFiles()
     {
-        $loadLocationFiles = (new Finder)->ignoreUnreadableDirs()->files()->in($this->
-            monitorLocation);
+        $loadLocationFiles = (new Finder)->ignoreUnreadableDirs()->files()->in($this->monitorLocation);
         if (!$loadLocationFiles)
             return false;
         foreach ($loadLocationFiles as $file)
@@ -80,7 +87,7 @@ class Monitor
             return false;
         foreach ($this->existingFiles as $fileName => $fileDetails)
             $Pack[] = $fileDetails[0] . ',' . $fileDetails[1] . ',' . $fileName;
-        file_put_contents($this->StorageLocation, gzdeflate(implode("\n", $Pack)));
+        file_put_contents(self::$storageLocation, gzdeflate(implode("\n", $Pack)));
     }
 
     /**
@@ -90,7 +97,7 @@ class Monitor
      */
     protected function GetKnownFiles()
     {
-        $currentFiles = (is_file($this->StorageLocation)) ? explode("\n", gzinflate(@file_get_contents($this->StorageLocation))) : [];
+        $currentFiles = (is_file(self::$storageLocation)) ? explode("\n", gzinflate(@file_get_contents(self::$storageLocation))) : [];
         if (empty($currentFiles))
             $this->knownFiles = [];
         else
