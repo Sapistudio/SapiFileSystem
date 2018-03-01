@@ -24,6 +24,7 @@ class Monitor
      */
     public function __construct(array $location)
     {
+        self::postInstall();
         $this->command = $command;
         $this->monitorLocation = $location;
         $this->timestamp = time();
@@ -31,12 +32,20 @@ class Monitor
         self::$storageLocation = __DIR__.DIRECTORY_SEPARATOR.self::$logFolder.DIRECTORY_SEPARATOR.self::$storageLocation;
     }
     
+    /**
+     * Monitor::postInstall()
+     * 
+     * @return
+     */
     public static function postInstall(){
         chdir(dirname(__FILE__));
         $directory  = __DIR__.DIRECTORY_SEPARATOR.self::$logFolder;
-        Handler::createDir($directory);
+        if(is_dir($directory))
+            return true;
+        mkdir($directory);
         exec('chmod 777 '.$directory);
     }
+    
     /**
      * Monitor::watch()
      * 
