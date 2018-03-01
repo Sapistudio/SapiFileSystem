@@ -15,7 +15,9 @@
         "crewlabs/unsplash": "^2.2"
     },
 	"scripts": {
-           "post-update-cmd": "SapiStudio\\FileSystem\\Monitor::postInstall"
+           "post-update-cmd": [
+            "SapiStudio\\FileSystem\\Monitor::postInstall"
+        ]
     },
     "autoload": {
         "psr-4": { "SapiStudio\\FileSystem\\": "src/" }
