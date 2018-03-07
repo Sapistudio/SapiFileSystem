@@ -130,7 +130,7 @@ class Handler
      * @return
      */
     public static function dumpJson($path,$text){
-        return static::$filesystem->dumpFile($path,json_encode($text));
+        return self::dumpFile($path,json_encode($text));
     }
     
     /**
