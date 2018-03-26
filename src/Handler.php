@@ -142,7 +142,7 @@ class Handler
      * @return
      */
     public static function dumpJson($path,$text){
-        return self::dumpFile($path,json_encode(array_filter($text)));
+        return self::dumpFile($path,json_encode($text));
     }
     
     /**
