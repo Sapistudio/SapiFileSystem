@@ -141,7 +141,10 @@ class Handler
      * @return
      */
     public static function loadJson($path,$toArray=false){
-        $file = static::$filesystem->get($path);
-        return (!$file) ? false : json_decode($file,$toArray);
+        try{
+            return json_decode(static::$filesystem->get($path),$toArray);
+        }catch(\Exception $e){
+            return false;
+        }
     }
 }
