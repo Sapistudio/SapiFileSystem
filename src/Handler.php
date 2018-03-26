@@ -3,6 +3,7 @@ namespace SapiStudio\FileSystem;
 
 use Symfony\Component\Finder\Finder;
 use Illuminate\Filesystem\Filesystem as IluminateFileSystem;
+use Illuminate\Support\Collection;
 
 class Handler
 {
