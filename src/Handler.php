@@ -123,6 +123,17 @@ class Handler
     }
     
     /**
+     * Handler::appendJson()
+     * 
+     * @param mixed $path
+     * @param mixed $text
+     * @return
+     */
+    public static function appendJson($path,$entries=[]){
+        return self::dumpJson($path,(new Collection(self::loadJson($path,true)))->concat($entries)->toArray());
+    }
+    
+    /**
      * Handler::dumpJson()
      * 
      * @param mixed $path
@@ -130,7 +141,7 @@ class Handler
      * @return
      */
     public static function dumpJson($path,$text){
-        return self::dumpFile($path,json_encode($text));
+        return self::dumpFile($path,json_encode(array_filter($text)));
     }
     
     /**
