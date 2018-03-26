@@ -156,7 +156,7 @@ class Handler
         try{
             return json_decode(static::$filesystem->get($path),$toArray);
         }catch(\Exception $e){
-            return false;
+            return ($toArray) ? [] : new \stdClass();
         }
     }
 }
