@@ -8,7 +8,7 @@ namespace SapiStudio\FileSystem\Parsers;
  * @version 5.rb 2012
  * @path libraries/classes/Nginx/WebLogParser.php
  * @access public
- fork after https://github.com/globalmac/KnuckleLog.git
+ * fork after https://github.com/globalmac/KnuckleLog.git
  */
 class WebLogParser
 {
