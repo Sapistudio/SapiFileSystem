@@ -1,5 +1,5 @@
 <?php
-namespace Nginx;
+namespace SapiStudio\FileSystem\Parsers;
 /**
  * @class Handler
  * @package SAPI Framework
@@ -8,6 +8,7 @@ namespace Nginx;
  * @version 5.rb 2012
  * @path libraries/classes/Nginx/WebLogParser.php
  * @access public
+ fork after https://github.com/globalmac/KnuckleLog.git
  */
 class WebLogParser
 {
