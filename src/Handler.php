@@ -40,7 +40,7 @@ class Handler
      */
     protected static function bootIluminateFileSystem()
     {
-        if (! isset(static::$filesystem)) {
+        if (!isset(static::$filesystem)) {
             static::$filesystem = new IluminateFileSystem();
         }
     }
@@ -170,6 +170,21 @@ class Handler
     public static function fileToArray($path,$separator="\n"){
         try{
             return explode($separator,static::$filesystem->get($path));
+        }catch(\Exception $e){
+            return [];
+        }
+    }
+    
+    /**
+     * Handler::arrayToFile()
+     * 
+     * @param mixed $path
+     * @param mixed $data
+     * @return
+     */
+    public static function arrayToFile($path,$data=[]){
+        try{
+            return self::dumpFile($path,implode("\n",$data));
         }catch(\Exception $e){
             return [];
         }
