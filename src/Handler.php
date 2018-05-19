@@ -1,6 +1,7 @@
 <?php
 namespace SapiStudio\FileSystem;
 
+use \Illuminate\Config\Repository;
 use Symfony\Component\Finder\Finder;
 use Illuminate\Filesystem\Filesystem as IluminateFileSystem;
 use Illuminate\Support\Collection;
@@ -155,6 +156,20 @@ class Handler
     public static function loadJson($path,$toArray=false){
         try{
             return json_decode(static::$filesystem->get($path),$toArray);
+        }catch(\Exception $e){
+            return ($toArray) ? [] : new \stdClass();
+        }
+    }
+    
+    /**
+     * Handler::loadJsonAsConfig()
+     * 
+     * @param mixed $path
+     * @return
+     */
+    public static function loadJsonAsConfig($path){
+        try{
+            return (new Repository(self::loadJson($path,true)));
         }catch(\Exception $e){
             return ($toArray) ? [] : new \stdClass();
         }
