@@ -159,4 +159,19 @@ class Handler
             return ($toArray) ? [] : new \stdClass();
         }
     }
+    
+    /**
+     * Handler::fileToArray()
+     * 
+     * @param mixed $path
+     * @param bool $toArray
+     * @return
+     */
+    public static function fileToArray($path,$separator="\n"){
+        try{
+            return explode($separator,static::$filesystem->get($path));
+        }catch(\Exception $e){
+            return [];
+        }
+    }
 }
