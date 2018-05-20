@@ -169,7 +169,8 @@ class Handler
      */
     public static function loadJsonAsConfig($path){
         try{
-            return (new Repository(self::loadJson($path,true)));
+            $jsonData = self::loadJson($path,true);
+            return (new Repository(($jsonData) ? $jsonData : []));
         }catch(\Exception $e){
             return ($toArray) ? [] : new \stdClass();
         }
