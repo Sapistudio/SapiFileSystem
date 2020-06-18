@@ -20,16 +20,15 @@ class Handler
     /** Handler::__callStatic() */
     public static function __callStatic($method, $parameters)
     {
-        self::bootIluminateFileSystem();
-        return static::$filesystem->$method(...$parameters);
+        return self::bootIluminateFileSystem()->$method(...$parameters);
     }
     
     /** Handler::bootIluminateFileSystem() */
     protected static function bootIluminateFileSystem()
     {
-        if (!isset(static::$filesystem)) {
+        if (!isset(static::$filesystem))
             static::$filesystem = new IluminateFileSystem();
-        }
+        return static::$filesystem;
     }
     
     /** Handler::getFinder()*/
@@ -41,7 +40,7 @@ class Handler
     public static function createDir($dir, $mkdirPermissions = 0755, $recursive=false){
         if (is_dir($dir))
             return true;
-        static::$filesystem->makeDirectory($dir,$mkdirPermissions,$recursive);
+        self::bootIluminateFileSystem()->makeDirectory($dir,$mkdirPermissions,$recursive);
     }
 
     /** Handler::getAllFiles() */
@@ -49,7 +48,7 @@ class Handler
     {
         if(!is_dir($dir))
             return false;
-        $files = static::$filesystem->allFiles($dir);
+        $files = self::bootIluminateFileSystem()->allFiles($dir);
         if(!$files)
             return false;
         foreach($files as $a=>$file)
@@ -60,14 +59,14 @@ class Handler
     /** Handler::getDirectoriesAndFiles()*/
     public static function getDirectoriesAndFiles($dir)
     {
-        return array_merge(static::$filesystem->directories($dir), static::$filesystem->files($dir));
+        return array_merge(self::bootIluminateFileSystem()->directories($dir), self::bootIluminateFileSystem()->files($dir));
     }
     
     /** Handler::dumpFile()*/
     public static function dumpFile($path,$text){
         //$this->chmod($path,0755);
         chmod($path, 0755);
-        return static::$filesystem->put($path,$text);
+        return self::bootIluminateFileSystem()->put($path,$text);
     }
     
     /** Handler::dumpJson() */
@@ -83,7 +82,7 @@ class Handler
     /** Handler::append() */
     public static function append($path, $data)
     {
-        return static::$filesystem->append($path,"\n".$data);
+        return self::bootIluminateFileSystem()->append($path,"\n".$data);
     }
     
     /** Handler::appendJson() */
@@ -94,7 +93,7 @@ class Handler
     /** Handler::loadJson() */
     public static function loadJson($path,$toArray=false){
         try{
-            return json_decode(static::$filesystem->get($path),$toArray);
+            return json_decode(self::bootIluminateFileSystem()->get($path),$toArray);
         }catch(\Exception $e){
             return ($toArray) ? [] : new \stdClass();
         }
@@ -113,7 +112,7 @@ class Handler
     /** Handler::fileToArray() */
     public static function fileToArray($path,$separator="\n"){
         try{
-            return explode($separator,static::$filesystem->get($path));
+            return explode($separator,self::bootIluminateFileSystem()->get($path));
         }catch(\Exception $e){
             return [];
         }
