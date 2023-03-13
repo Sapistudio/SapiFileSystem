@@ -55,6 +55,19 @@ class Handler
             $return[] = ($returnfile) ? $file->getFilename() : $file->getRealPath();
         return $return;
     }
+    
+    /** Handler::getFilesFromFolder() */
+    public static function getFilesFromFolder($dir,$returnfile = false)
+    {
+        if(!is_dir($dir))
+            return false;
+        $files = self::bootIluminateFileSystem()->files($dir);
+        if(!$files)
+            return false;
+        foreach($files as $a=>$file)
+            $return[] = ($returnfile) ? basename($file) : $file;
+        return $return;
+    }
 
     /** Handler::getDirectoriesAndFiles()*/
     public static function getDirectoriesAndFiles($dir)
